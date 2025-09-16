@@ -1,0 +1,20 @@
+{
+  "name": "db-migration-app",
+  "version": "1.0.0",
+  "description": "A simple Node.js app for the database migration task.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest",
+    "migrate": "knex migrate:latest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "knex": "^2.4.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
+  }
+}

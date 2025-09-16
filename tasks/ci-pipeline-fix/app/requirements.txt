@@ -1,0 +1,4 @@
+# Dependencies for the application
+# A specific, vulnerable version of PyYAML is included for the security scanning step.
+PyYAML==6.0
+flake8==4.0.1

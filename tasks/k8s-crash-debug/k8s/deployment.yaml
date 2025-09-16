@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-crash-app-deployment
+  labels:
+    app: k8s-crash-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-crash-app
+  template:
+    metadata:
+      labels:
+        app: k8s-crash-app
+    spec:
+      containers:
+      - name: k8s-crash-app
+        # The user will need to build and tag this image
+        image: k8s-crash-app:latest
+        # Image pull policy is set to Never because the image will be built locally
+        # and loaded into the local k8s cluster (e.g. kind), not pulled from a registry.
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
