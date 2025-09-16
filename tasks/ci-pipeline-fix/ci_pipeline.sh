@@ -20,7 +20,8 @@ fi
 
 # --- Stage 2: Linting ---
 echo -e "\n🎨 Running Linter (flake8)..."
-if flake8 app/; then
+# Added --max-line-length to make the check stricter
+if flake8 app/ --max-line-length=88; then
   echo "✅ Linter passed."
 else
   echo "❌ Linter failed with style issues."
@@ -29,12 +30,22 @@ fi
 
 # --- Stage 3: Security Scan ---
 echo -e "\n🛡️ Running Security Scan..."
-# This is a mock scanner that checks for a specific vulnerable package.
-if grep -q "PyYAML==5.3" app/requirements.txt; then
-  echo "❌ Security scan failed: Vulnerable dependency 'PyYAML==5.3' found."
-  exit 1
-else
-  echo "✅ Security scan passed."
+VULNERABLE_VERSION_FOUND=0
+# More robust check for vulnerable PyYAML version
+PYYAML_VERSION=$(grep "PyYAML" app/requirements.txt | sed 's/==/ /g' | awk '{print $2}')
+if [[ -n "$PYYAML_VERSION" ]]; then
+    # Use sort -V to compare versions
+    if ! printf '%s\n' "5.4" "$PYYAML_VERSION" | sort -V -C; then
+        echo "❌ Security scan failed: Vulnerable dependency 'PyYAML' version '$PYYAML_VERSION' found. Please update to 5.4 or higher."
+        VULNERABLE_VERSION_FOUND=1
+    fi
 fi
+
+if [ $VULNERABLE_VERSION_FOUND -eq 1 ]; then
+    exit 1
+else
+    echo "✅ Security scan passed."
+fi
+
 
 echo -e "\n🎉 CI Pipeline Finished Successfully!"
