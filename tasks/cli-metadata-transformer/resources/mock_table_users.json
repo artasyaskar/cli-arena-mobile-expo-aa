@@ -1,0 +1,46 @@
+[
+  {
+    "id": "user_1",
+    "username": "alice_wonder",
+    "email": "alice@example.com",
+    "full_name": "Alice Wonderland",
+    "created_at": "2023-01-15T10:00:00Z",
+    "profile": {
+      "bio": "Curiouser and curiouser!",
+      "location": "Wonderland"
+    }
+  },
+  {
+    "id": "user_2",
+    "username": "bob_builder",
+    "email": "bob@example.com",
+    "full_name": "Bob Builder",
+    "created_at": "2023-01-20T14:30:00Z",
+    "profile": {
+      "bio": "Can we fix it? Yes, we can!",
+      "location": "Fixham"
+    }
+  },
+  {
+    "id": "user_3",
+    "username": "charlie_c",
+    "email": "charlie@example.com",
+    "full_name": "Charlie Chaplin",
+    "created_at": "2023-02-01T08:15:00Z",
+    "profile": {
+      "bio": "A day without laughter is a day wasted.",
+      "location": "Hollywood"
+    }
+  },
+  {
+    "id": "user_4",
+    "username": "diana_p",
+    "email": "diana@example.com",
+    "full_name": "Diana Prince",
+    "created_at": "2023-02-10T18:00:00Z",
+    "profile": {
+      "bio": "Fighting for those who cannot fight for themselves.",
+      "location": "Themyscira"
+    }
+  }
+]

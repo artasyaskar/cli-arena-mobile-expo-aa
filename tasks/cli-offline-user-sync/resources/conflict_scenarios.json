@@ -1,0 +1,109 @@
+{
+  "scenarios": [
+    {
+      "description": "Update conflict: Server record is newer. Client action uses 'timestamp' strategy and client is newer.",
+      "client_action": {
+        "actionId": "conflict_update_001",
+        "type": "UPDATE",
+        "entity": "users",
+        "id": "user_1",
+        "payload": {"name": "Alice in Wonderland Updated by Client"},
+        "timestamp": "2023-01-01T12:00:00Z",
+        "client_version": 1
+      },
+      "server_record_initial": {
+        "id": "user_1", "name": "Alice Wonderland", "email": "alice@example.com", "version": 1, "last_modified": "2023-01-01T10:00:00Z"
+      },
+      "server_record_modified_before_sync": {
+        "id": "user_1", "name": "Alice Wonderland (Server Update)", "email": "alice@example.com", "version": 2, "last_modified": "2023-01-01T11:00:00Z"
+      },
+      "expected_outcome_strategy_timestamp": "client_wins"
+    },
+    {
+      "description": "Update conflict: Server record is newer. Client action uses 'timestamp' strategy and server is newer.",
+      "client_action": {
+        "actionId": "conflict_update_002",
+        "type": "UPDATE",
+        "entity": "users",
+        "id": "user_1",
+        "payload": {"name": "Alice in Wonderland Updated by Client (Old)"},
+        "timestamp": "2023-01-01T09:00:00Z",
+        "client_version": 1
+      },
+      "server_record_initial": {
+         "id": "user_1", "name": "Alice Wonderland", "email": "alice@example.com", "version": 1, "last_modified": "2023-01-01T08:00:00Z"
+      },
+      "server_record_modified_before_sync": {
+        "id": "user_1", "name": "Alice Wonderland (Server Update)", "email": "alice@example.com", "version": 2, "last_modified": "2023-01-01T10:00:00Z"
+      },
+      "expected_outcome_strategy_timestamp": "server_wins"
+    },
+    {
+      "description": "Update conflict: Client action uses 'server-wins' strategy.",
+      "client_action": {
+        "actionId": "conflict_update_003",
+        "type": "UPDATE",
+        "entity": "posts",
+        "id": "post_1",
+        "payload": {"title": "Client Title Change"},
+        "timestamp": "2023-01-02T13:00:00Z",
+        "client_version": 1
+      },
+      "server_record_initial": {
+        "id": "post_1", "userId": "user_1", "title": "Hello World", "content": "My first post.", "version": 1, "last_modified": "2023-01-02T12:00:00Z"
+      },
+      "server_record_modified_before_sync": {
+         "id": "post_1", "userId": "user_1", "title": "Hello World (Server Edit)", "content": "My first post, server version.", "version": 2, "last_modified": "2023-01-02T12:30:00Z"
+      },
+      "expected_outcome_strategy_server_wins": "server_wins"
+    },
+    {
+      "description": "Create conflict: Record with same ID already exists on server.",
+      "client_action": {
+        "actionId": "conflict_create_001",
+        "type": "CREATE",
+        "entity": "users",
+        "payload": {"id": "user_2", "name": "Charlie Duplicate", "email": "charlie.dup@example.com"},
+        "timestamp": "2023-01-06T10:00:00Z",
+        "client_version": 1
+      },
+      "server_record_existing": {
+        "id": "user_2", "name": "Bob The Builder", "email": "bob@example.com", "version": 1, "last_modified": "2023-01-01T11:00:00Z"
+      },
+      "expected_outcome_strategy_client_wins": "client_overwrites_server",
+      "expected_outcome_strategy_server_wins": "client_action_discarded"
+    },
+    {
+      "description": "Delete conflict: Record already deleted on server.",
+      "client_action": {
+        "actionId": "conflict_delete_001",
+        "type": "DELETE",
+        "entity": "users",
+        "id": "user_deleted_on_server",
+        "timestamp": "2023-01-07T10:00:00Z",
+        "client_version": 1
+      },
+      "server_state": "record_does_not_exist",
+      "expected_outcome": "action_ack_as_noop"
+    },
+    {
+      "description": "Delete conflict: Record modified on server after client based delete on old version.",
+      "client_action": {
+        "actionId": "conflict_delete_002",
+        "type": "DELETE",
+        "entity": "posts",
+        "id": "post_2",
+        "timestamp": "2023-01-03T15:00:00Z",
+        "client_version": 1
+      },
+      "server_record_initial": {
+        "id": "post_2", "userId": "user_2", "title": "Offline Strategies", "content": "Thinking about them.", "version": 1, "last_modified": "2023-01-03T14:00:00Z"
+      },
+      "server_record_modified_before_sync": {
+         "id": "post_2", "userId": "user_2", "title": "Offline Strategies (Server Edit)", "content": "Server content updated after client read for delete.", "version": 2, "last_modified": "2023-01-03T15:30:00Z"
+      },
+      "expected_outcome_strategy_timestamp_client_older": "server_wins_delete_fails",
+      "expected_outcome_strategy_force_delete": "client_wins_record_deleted"
+    }
+  ]
+}

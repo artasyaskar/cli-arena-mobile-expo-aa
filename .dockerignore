@@ -1,0 +1,10 @@
+# Exclude solution.sh and verify.sh files to prevent cheating
+**/solution.sh
+**/tasks/*/solution.sh
+**/tasks/*/*/solution.sh
+**/verify.sh
+**/tasks/*/verify.sh
+**/tasks/*/*/verify.sh
+# Exclude node_modules - speeds up Docker build
+node_modules/
+**/node_modules/

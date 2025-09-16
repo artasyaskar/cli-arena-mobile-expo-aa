@@ -1,0 +1,56 @@
+[
+  {
+    "id": "post_101",
+    "user_id": "user_1",
+    "title": "My First Adventure",
+    "content": "Down the rabbit hole I went...",
+    "tags": ["fantasy", "adventure"],
+    "published_at": "2023-01-16T10:00:00Z",
+    "status": "published"
+  },
+  {
+    "id": "post_102",
+    "user_id": "user_1",
+    "title": "Tea Party Thoughts",
+    "content": "The Mad Hatter is quite mad indeed.",
+    "tags": ["fantasy", "humor"],
+    "published_at": "2023-01-18T12:30:00Z",
+    "status": "published"
+  },
+  {
+    "id": "post_201",
+    "user_id": "user_2",
+    "title": "Building a Better Birdhouse",
+    "content": "Step-by-step guide to your first birdhouse.",
+    "tags": ["diy", "construction", "crafts"],
+    "published_at": "2023-01-22T09:00:00Z",
+    "status": "published"
+  },
+  {
+    "id": "post_202",
+    "user_id": "user_2",
+    "title": "The Importance of Teamwork",
+    "content": "No project is too big with a good team.",
+    "tags": ["teamwork", "construction"],
+    "published_at": "2023-01-25T16:45:00Z",
+    "status": "draft"
+  },
+  {
+    "id": "post_301",
+    "user_id": "user_3",
+    "title": "Silent Film Techniques",
+    "content": "Exploring the art of visual storytelling.",
+    "tags": ["film", "history", "art"],
+    "published_at": "2023-02-05T11:00:00Z",
+    "status": "published"
+  },
+  {
+    "id": "post_501",
+    "user_id": "user_5",
+    "title": "A Post from a Missing User",
+    "content": "This user does not exist in mock_table_users.json.",
+    "tags": ["orphan", "test"],
+    "published_at": "2023-03-01T00:00:00Z",
+    "status": "published"
+  }
+]

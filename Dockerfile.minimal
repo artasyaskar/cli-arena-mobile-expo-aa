@@ -1,0 +1,4 @@
+FROM cli-arena-base:latest
+WORKDIR /repo
+COPY . .
+RUN if [ -f requirements.txt ]; then pip install -r requirements.txt || echo "Warning: pip install failed, continuing anyway"; fi

@@ -1,0 +1,111 @@
+{
+  "target_table": "indexed_content",
+  "sources": [
+    {
+      "name": "users",
+      "file": "resources/mock_table_users.json",
+      "alias": "u"
+    },
+    {
+      "name": "posts",
+      "file": "resources/mock_table_posts.json",
+      "alias": "p"
+    },
+    {
+      "name": "comments",
+      "file": "resources/mock_table_comments.json",
+      "alias": "c"
+    }
+  ],
+  "transformations": [
+    {
+      "name": "user_posts_with_comments",
+      "description": "Combines user data with their posts and associated comments.",
+      "primary_source": "posts",
+      "joins": [
+        {
+          "from_source": "posts",
+          "from_field": "user_id",
+          "to_source": "users",
+          "to_field": "id",
+          "type": "left",
+          "prefix": "author_"
+        },
+        {
+          "from_source": "posts",
+          "from_field": "id",
+          "to_source": "comments",
+          "to_field": "post_id",
+          "type": "left_many",
+          "prefix": "comment_",
+          "fields_to_include": ["id", "user_id", "comment_text", "created_at"],
+          "nested_joins": [
+            {
+              "from_source": "comments",
+              "from_field": "user_id",
+              "to_source": "users",
+              "to_field": "id",
+              "type": "left",
+              "prefix": "commenter_"
+            }
+          ]
+        }
+      ],
+      "field_mappings": [
+        {"source_field": "p.id", "target_field": "post_id", "type": "string"},
+        {"source_field": "p.title", "target_field": "post_title", "type": "string"},
+        {"source_field": "p.content", "target_field": "post_content", "type": "string"},
+        {"source_field": "p.tags", "target_field": "post_tags", "type": "json_string"},
+        {"source_field": "p.published_at", "target_field": "post_published_at", "type": "datetime"},
+        {"source_field": "p.status", "target_field": "post_status", "type": "string"},
+        {"source_field": "author_username", "target_field": "author_username", "type": "string"},
+        {"source_field": "author_email", "target_field": "author_email", "type": "string"},
+        {"source_field": "author_full_name", "target_field": "author_full_name", "type": "string"},
+        {"source_field": "author_profile_location", "target_field": "author_location", "type": "string", "jq_transform": ".u.profile.location // null"},
+        {"source_field": "comments_data", "target_field": "comments", "type": "json_string", "jq_transform": "[.c[]? | {comment_id: .comment_id, commenter_username: .commenter_username, text: .comment_text, commented_at: .comment_created_at}]"}
+      ],
+      "computed_fields": [
+        {
+          "target_field": "full_text_search",
+          "type": "string",
+          "jq_expression": ".p.title + \" \" + .p.content + \" \" + (.u.full_name // \"\") + \" \" + ([.c[]? | .comment_text] | join(\" \"))"
+        },
+        {
+            "target_field": "comment_count",
+            "type": "integer",
+            "jq_expression": "[.c[]?] | length"
+        }
+      ],
+      "filters": [
+        ".p.status == \"published\""
+      ]
+    }
+  ],
+  "sqlite_schema": {
+    "table_name": "indexed_content",
+    "columns": [
+      {"name": "post_id", "type": "TEXT PRIMARY KEY"},
+      {"name": "post_title", "type": "TEXT"},
+      {"name": "post_content", "type": "TEXT"},
+      {"name": "post_tags", "type": "TEXT"},
+      {"name": "post_published_at", "type": "TEXT"},
+      {"name": "post_status", "type": "TEXT"},
+      {"name": "author_username", "type": "TEXT"},
+      {"name": "author_email", "type": "TEXT"},
+      {"name": "author_full_name", "type": "TEXT"},
+      {"name": "author_location", "type": "TEXT"},
+      {"name": "comments", "type": "TEXT"},
+      {"name": "comment_count", "type": "INTEGER"},
+      {"name": "full_text_search", "type": "TEXT"}
+    ],
+    "indexes": [
+      "CREATE INDEX idx_post_title ON indexed_content (post_title);",
+      "CREATE INDEX idx_author_username ON indexed_content (author_username);",
+      "CREATE INDEX idx_post_published_at ON indexed_content (post_published_at);",
+      "CREATE VIRTUAL TABLE IF NOT EXISTS indexed_content_fts USING fts5(post_id UNINDEXED, full_text_search, content='indexed_content', content_rowid='rowid');",
+      "CREATE TRIGGER indexed_content_ai AFTER INSERT ON indexed_content BEGIN INSERT INTO indexed_content_fts (rowid, full_text_search) VALUES (new.rowid, new.full_text_search); END;",
+      "CREATE TRIGGER indexed_content_ad AFTER DELETE ON indexed_content BEGIN DELETE FROM indexed_content_fts WHERE rowid=old.rowid; END;",
+      "CREATE TRIGGER indexed_content_au AFTER UPDATE ON indexed_content BEGIN UPDATE indexed_content_fts SET full_text_search = new.full_text_search WHERE rowid=old.rowid; END;"
+    ]
+  }
+}

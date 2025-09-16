@@ -1,0 +1,27 @@
+{
+  "extends": "../tsconfig.json", // Inherit from the main tsconfig.json
+  "compilerOptions": {
+    "outDir": "../dist-tests", // Separate output directory for test builds (if needed)
+    "rootDir": "..", // Root directory is project root for tests to find src and tests
+    "baseUrl": ".", // Ensure baseUrl is consistent if using paths
+    "paths": {
+      "@/*": ["src/*"] // Ensure path aliases work in tests
+    },
+    // Include types for Jest and Node
+    "types": ["jest", "node"],
+    // Potentially allow JS files if some test utilities are in JS
+    // "allowJs": true,
+    "esModuleInterop": true, // Important for some Jest setups with ES modules
+    "noEmit": true // Typically, ts-jest handles transpilation, so no need for tsc to emit JS for tests
+                   // Set to false if you have a separate build step for tests that requires JS output
+  },
+  "include": [
+    "**/*.ts", // Include all .ts files within the tests directory
+    "../src/**/*.ts", // Include source files for type checking and coverage
+    "../tasks/**/*.ts" // Include task-specific test files and related source if any
+  ],
+  "exclude": [
+    "../node_modules",
+    "../dist"
+  ]
+}

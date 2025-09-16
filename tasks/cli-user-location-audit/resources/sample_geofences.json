@@ -1,0 +1,46 @@
+[
+  {
+    "fenceName": "DowntownOffice",
+    "description": "Main office building in downtown area.",
+    "type": "rectangle",
+    "minLat": 34.0522,
+    "maxLat": 34.0532,
+    "minLon": -118.2437,
+    "maxLon": -118.2427,
+    "alertOnEnter": true,
+    "alertOnExit": true
+  },
+  {
+    "fenceName": "WarehouseDistrict",
+    "description": "Logistics and warehouse zone.",
+    "type": "rectangle",
+    "minLat": 33.9000,
+    "maxLat": 33.9500,
+    "minLon": -118.1000,
+    "maxLon": -118.0500,
+    "alertOnEnter": true,
+    "alertOnExit": false
+  },
+  {
+    "fenceName": "RestrictedAreaA",
+    "description": "Highly restricted zone, exit alerts only.",
+    "type": "rectangle",
+    "minLat": 40.7128,
+    "maxLat": 40.7138,
+    "minLon": -74.0060,
+    "maxLon": -74.0050,
+    "alertOnEnter": false,
+    "alertOnExit": true
+  },
+  {
+    "fenceName": "LargePark",
+    "description": "City park area for leisure tracking.",
+    "type": "rectangle",
+    "minLat": 34.0600,
+    "maxLat": 34.0800,
+    "minLon": -118.2500,
+    "maxLon": -118.2300,
+    "alertOnEnter": true,
+    "alertOnExit": true
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "formId": "customer_satisfaction_survey",
+  "title": "Customer Satisfaction Survey",
+  "fields": [
+    {
+      "name": "customer_name",
+      "label": "Your Name (Optional)",
+      "type": "text",
+      "required": false,
+      "validation": {
+        "maxLength": 50
+      }
+    },
+    {
+      "name": "email",
+      "label": "Your Email (Optional, for follow-up)",
+      "type": "email",
+      "required": false,
+      "validation": {
+        "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+        "regex_error": "Please enter a valid email address."
+      }
+    },
+    {
+      "name": "rating",
+      "label": "Overall satisfaction (1-5, 5 being very satisfied)",
+      "type": "number",
+      "required": true,
+      "validation": {
+        "minValue": 1,
+        "maxValue": 5,
+        "regex_error": "Please enter a number between 1 and 5."
+      }
+    },
+    {
+      "name": "product_used",
+      "label": "Which product did you use recently?",
+      "type": "select",
+      "required": true,
+      "options": ["Product A", "Product B", "Product C", "Other"],
+      "validation": {
+        "regex_error": "Please select a valid product."
+      }
+    },
+    {
+      "name": "feedback_type",
+      "label": "Type of feedback",
+      "type": "select",
+      "required": true,
+      "options": ["Compliment", "Suggestion", "Complaint", "Query"],
+      "defaultValue": "Suggestion"
+    },
+    {
+      "name": "comments",
+      "label": "Additional Comments (max 500 characters)",
+      "type": "textarea",
+      "required": false,
+      "validation": {
+        "maxLength": 500
+      }
+    },
+    {
+      "name": "contact_preference",
+      "label": "May we contact you for follow-up?",
+      "type": "select",
+      "required": true,
+      "options": ["Yes", "No"],
+      "defaultValue": "No"
+    }
+  ]
+}

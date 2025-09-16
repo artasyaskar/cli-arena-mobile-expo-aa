@@ -1,0 +1,49 @@
+{
+  "users": {
+    "alice": {
+      "password": "password123",
+      "tenants": {
+        "tenant_alpha": {
+          "name": "Alpha Corp",
+          "role": "admin"
+        },
+        "tenant_beta": {
+          "name": "Beta Inc",
+          "role": "member"
+        }
+      }
+    },
+    "bob": {
+      "password": "password456",
+      "tenants": {
+        "tenant_beta": {
+          "name": "Beta Inc",
+          "role": "viewer"
+        }
+      }
+    },
+    "charlie": {
+      "password": "password789",
+      "tenants": {
+        "tenant_gamma": {
+          "name": "Gamma LLC",
+          "role": "owner"
+        },
+        "tenant_alpha": {
+          "name": "Alpha Corp",
+          "role": "member"
+        }
+      }
+    },
+    "no_tenant_user": {
+        "password": "password000",
+        "tenants": {}
+    }
+  },
+  "roles_permissions": {
+    "admin": ["create_item", "view_items", "delete_item", "admin_action", "view_settings"],
+    "member": ["create_item", "view_items"],
+    "viewer": ["view_items"],
+    "owner": ["create_item", "view_items", "delete_item", "admin_action", "view_settings", "manage_users"]
+  }
+}

@@ -1,0 +1,24 @@
+expoPushToken,name,userId,customData
+ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx],Alice Wonderland,user_1,"{""discount_code"": ""WONDER10""}"
+ExponentPushToken[yyyyyyyyyyyyyyyyyyyyyy],Bob The Builder,user_2,"{""points"": 150}"
+ExponentPushToken[zzzzzzzzzzzzzzzzzzzzzz],Charlie Brown,user_3,"{""last_login"": ""2023-10-26""}"
+ExponentPushToken[aaaaaaaaaaaaaaaaaaaaaa],Diana Prince,user_4,"{""feature_flag"": true}"
+ExponentPushToken[bbbbbbbbbbbbbbbbbbbbbb],Edward Nygma,user_5,
+ExponentPushToken[cccccccccccccccccccccc],Fiona Gallagher,user_6,"{""valid"": ""yes""}"
+ExponentPushToken[dddddddddddddddddddddd],George Jetson,user_7,"{""message"": ""Hello George""}"
+ExponentPushToken[eeeeeeeeeeeeeeeeeeeeee],INVALID_TOKEN_FORMAT,user_8,"{""status"": ""test""}"
+ExponentPushToken[ffffffffffffffffffffff],Harry Potter,user_9,"{""house"": ""Gryffindor""}"
+ExponentPushToken[gggggggggggggggggggggg],Iris West,user_10,"{""speed"": 9000}"
+#This recipient will cause a MessageTooBig error if template is large
+ExponentPushToken[hhhhhhhhhhhhhhhhhhhhhh],MessageTooBigRecipient,user_11,"{""profile_url"": ""http://example.com/profile/user_11""}"
+#This recipient will cause DeviceNotRegistered error
+ExponentPushToken[iiiiiiiiiiiiiiiiiiiiii],DeviceNotRegisteredRecipient,user_12,"{""opt_out"": false}"
+ExponentPushToken[jjjjjjjjjjjjjjjjjjjjjj],MissingNameToken,,user_13,"{""note"":""Name is missing""}"
+ExponentPushToken[kkkkkkkkkkkkkkkkkkkkkk],Token With Spaces, user_14, "{}"
+ExponentPushToken[llllllllllllllllllllll],Duplicate User,user_1,"{""warning"": ""Duplicate user ID as Alice""}"
+ExponentPushToken[mmmmmmmmmmmmmmmmmmmmmm],User With Special Chars &" ' (),user_15,"{""desc"": ""Text with & and '""}"
+ExponentPushToken[nnnnnnnnnnnnnnnnnnnnnn],User16,user_16,"{}"
+ExponentPushToken[oooooooooooooooooooooo],User17,user_17,"{}"
+ExponentPushToken[pppppppppppppppppppppp],User18,user_18,"{}"
+ExponentPushToken[qqqqqqqqqqqqqqqqqqqqqq],User19,user_19,"{}"
+ExponentPushToken[rrrrrrrrrrrrrrrrrrrrrr],User20,user_20,"{}"

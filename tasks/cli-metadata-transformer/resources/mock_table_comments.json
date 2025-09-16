@@ -1,0 +1,44 @@
+[
+  {
+    "id": "comment_1001",
+    "post_id": "post_101",
+    "user_id": "user_2",
+    "comment_text": "Fascinating adventure, Alice!",
+    "created_at": "2023-01-17T08:00:00Z"
+  },
+  {
+    "id": "comment_1002",
+    "post_id": "post_101",
+    "user_id": "user_3",
+    "comment_text": "I loved the part about the Cheshire Cat.",
+    "created_at": "2023-01-17T09:15:00Z"
+  },
+  {
+    "id": "comment_2001",
+    "post_id": "post_201",
+    "user_id": "user_1",
+    "comment_text": "Great guide, Bob! Very helpful.",
+    "created_at": "2023-01-23T10:00:00Z"
+  },
+  {
+    "id": "comment_3001",
+    "post_id": "post_301",
+    "user_id": "user_4",
+    "comment_text": "A true master of the craft.",
+    "created_at": "2023-02-06T14:00:00Z"
+  },
+  {
+    "id": "comment_3002",
+    "post_id": "post_301",
+    "user_id": "user_1",
+    "comment_text": "Indeed, a timeless art form.",
+    "created_at": "2023-02-07T10:30:00Z"
+  },
+  {
+    "id": "comment_9001",
+    "post_id": "post_999",
+    "user_id": "user_1",
+    "comment_text": "This comment is for a post that does not exist.",
+    "created_at": "2023-03-02T00:00:00Z"
+  }
+]

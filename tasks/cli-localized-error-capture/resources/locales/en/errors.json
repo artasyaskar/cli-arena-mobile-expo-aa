@@ -1,0 +1,10 @@
+{
+  "E_GENERIC": "An unspecified error occurred (Code: {{errorCode}}).",
+  "E_FILE_NOT_FOUND": "File '{{filename}}' not found. Operation: {{operation}}.",
+  "E_PERMISSION_DENIED": "Permission denied for '{{resource}}'. User: {{username}}.",
+  "E_NETWORK_UNAVAILABLE": "Network is unavailable. Please check your connection.",
+  "E_INVALID_INPUT": "Invalid input provided for '{{field}}'. Reason: {{reason}}.",
+  "E_CONFIG_LOAD_FAILED": "Failed to load configuration from '{{path}}'. Error: {{detail}}.",
+  "W_DEPRECATED_FEATURE": "Warning: Feature '{{featureName}}' is deprecated and will be removed in a future version.",
+  "I_OPERATION_SUCCESSFUL": "Operation '{{operation}}' completed successfully for '{{target}}'."
+}

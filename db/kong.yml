@@ -1,0 +1,25 @@
+# This is a placeholder for Kong's declarative configuration.
+# For local Supabase development, Supabase CLI typically manages Kong configuration.
+# If you need to customize Kong beyond what Supabase CLI provides,
+# you can define your services, routes, plugins, etc., here.
+
+# Example (illustrative, not necessarily needed for basic Supabase setup):
+# _format_version: "2.1"
+#
+# services:
+# - name: my-custom-service
+#   url: http://my-upstream-api:8080
+#   routes:
+#   - name: my-custom-route
+#     paths:
+#     - /my-custom-path
+
+# Refer to Kong documentation for details on declarative configuration:
+# https://docs.konghq.com/gateway/latest/reference/declarative-config/
+#
+# For Supabase, it's often easier to let the Supabase CLI handle Kong.
+# This file is included primarily to satisfy the volume mount in docker-compose.yml.
+# You might not need to populate it unless you have advanced Kong customization needs.
+
+# An empty file is often sufficient if Supabase CLI handles all Kong config.
+# Or you can remove the volume mount from docker-compose.yml if this file is not used.

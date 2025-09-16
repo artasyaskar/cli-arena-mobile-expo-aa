@@ -1,0 +1,241 @@
+{
+  "version": "1.0",
+  "repository": "cli-arena-web-nextjs",
+  "total_tasks": 12,
+  "categories": {
+    "async": [
+      "cli-async-background-jobs"
+    ],
+    "batched": [
+      "cli-batched-push-handler"
+    ],
+    "cross": [
+      "cli-cross-platform-uploads"
+    ],
+    "graphql": [
+      "cli-graphql-subscriber"
+    ],
+    "localized": [
+      "cli-localized-error-capture"
+    ],
+    "metadata": [
+      "cli-metadata-transformer"
+    ],
+    "multi": [
+      "cli-multi-tenant-login"
+    ],
+    "offline": [
+      "cli-offline-form-replayer",
+      "cli-offline-user-sync"
+    ],
+    "secure": [
+      "cli-secure-token-storage"
+    ],
+    "session": [
+      "cli-session-timeout-manager"
+    ],
+    "user": [
+      "cli-user-location-audit"
+    ]
+  },
+  "difficulty_distribution": {
+    "ultra-hard": 12
+  },
+  "estimated_total_time": 3030,
+  "tasks": [
+    {
+      "id": "cli-async-background-jobs",
+      "title": "Advanced CLI for Local Asynchronous Background Job Scheduling and Management with Retries",
+      "difficulty": "ultra-hard",
+      "estimated_time": 280,
+      "tags": [
+        "cli",
+        "background-jobs",
+        "async",
+        "scheduler",
+        "retry-logic",
+        "sqlite",
+        "process-management"
+      ],
+      "description": "Implement a robust CLI tool for scheduling, executing, and managing local background jobs. Jobs are arbitrary shell commands. The system must handle asynchronous execution, persistent state, and sophisticated retry mechanisms for failed jobs."
+    },
+    {
+      "id": "cli-batched-push-handler",
+      "title": "Advanced CLI for Batching and Simulating Expo Push Notifications",
+      "difficulty": "ultra-hard",
+      "estimated_time": 220,
+      "tags": [
+        "cli",
+        "push-notifications",
+        "expo",
+        "batching",
+        "rate-limiting",
+        "templating",
+        "simulation"
+      ],
+      "description": "Implement a CLI tool that simulates the process of sending batched push notifications via a mock Expo Push API. The tool should be highly configurable and provide detailed feedback and reporting."
+    },
+    {
+      "id": "cli-cross-platform-uploads",
+      "title": "Advanced CLI for Parallel Multi-File/Directory Uploads to Supabase Storage with Ignore Patterns and Checksums",
+      "difficulty": "ultra-hard",
+      "estimated_time": 270,
+      "tags": [
+        "cli",
+        "file-upload",
+        "supabase-storage",
+        "parallel",
+        "checksum",
+        "ignore-patterns",
+        "cross-platform"
+      ],
+      "description": "Implement a robust CLI tool for uploading multiple files and entire directory structures (recursively) to a mock Supabase Storage. The tool must handle large files, perform uploads in parallel, report progress, validate checksums, and respect ignore patterns similar to .gitignore."
+    },
+    {
+      "id": "cli-graphql-subscriber",
+      "title": "CLI for Real-time Supabase GraphQL Subscriptions with Advanced Features",
+      "difficulty": "ultra-hard",
+      "estimated_time": 260,
+      "tags": [
+        "cli",
+        "graphql",
+        "subscriptions",
+        "websockets",
+        "supabase",
+        "real-time",
+        "websocat",
+        "nodejs"
+      ],
+      "description": "Implement a sophisticated CLI tool that subscribes to real-time data streams from a Supabase GraphQL endpoint using GraphQL subscriptions over WebSockets. The tool must be resilient, configurable, and provide clear output of received data and connection status."
+    },
+    {
+      "id": "cli-localized-error-capture",
+      "title": "CLI Framework for Multi-Language Localized Error Capturing and Reporting",
+      "difficulty": "ultra-hard",
+      "estimated_time": 240,
+      "tags": [
+        "cli",
+        "framework",
+        "localization",
+        "i18n",
+        "error-handling",
+        "json"
+      ],
+      "description": "Develop a Bash framework/library for capturing and reporting errors with support for multiple languages. This framework will be sourced and used by other CLI tools. It should handle locale detection, loading localized error messages from JSON files, parameter substitution in messages, and fallback to a default language."
+    },
+    {
+      "id": "cli-metadata-transformer",
+      "title": "CLI Metadata Transformer for Supabase Table Data with Local Indexing",
+      "difficulty": "ultra-hard",
+      "estimated_time": 280,
+      "tags": [
+        "cli",
+        "data-transformation",
+        "etl",
+        "supabase",
+        "json",
+        "jq",
+        "sqlite",
+        "indexing",
+        "search"
+      ],
+      "description": "Develop a CLI tool that fetches data from mock Supabase tables (represented as JSON files), transforms this data based on user-defined rules, and then indexes the transformed data into a local SQLite database for fast CLI-based searching and filtering."
+    },
+    {
+      "id": "cli-multi-tenant-login",
+      "title": "CLI Multi-Tenant Authentication with Role-Based Access Control",
+      "difficulty": "ultra-hard",
+      "estimated_time": 300,
+      "tags": [
+        "cli",
+        "authentication",
+        "multi-tenant",
+        "rbac",
+        "session-management",
+        "api-client",
+        "supabase-like"
+      ],
+      "description": "Develop a CLI tool that implements a multi-tenant authentication system. Users first authenticate globally, then can list and switch between tenants (organizations) they belong to. Access to tenant-specific resources and CLI commands should be governed by role-based access control (RBAC) within the context of the active tenant."
+    },
+    {
+      "id": "cli-offline-form-replayer",
+      "title": "CLI Offline Form Entry and Replay System with Validation and Conflict Handling",
+      "difficulty": "ultra-hard",
+      "estimated_time": 260,
+      "tags": [
+        "cli",
+        "offline",
+        "forms",
+        "data-entry",
+        "replay",
+        "validation",
+        "conflict-resolution",
+        "json"
+      ],
+      "description": "Develop a CLI tool that allows users to fill out predefined forms while offline. The form entries are saved locally and can be replayed (submitted to a remote API) when an internet connection is available. The system must include robust form definition, input validation, secure local storage for pending submissions, retry mechanisms, and basic conflict resolution."
+    },
+    {
+      "id": "cli-offline-user-sync",
+      "title": "Advanced Offline Action Sync with Supabase & Conflict Resolution",
+      "difficulty": "ultra-hard",
+      "estimated_time": 240,
+      "tags": [
+        "sync",
+        "offline",
+        "supabase",
+        "cli",
+        "conflict-resolution",
+        "crdt-like",
+        "retry-logic"
+      ],
+      "description": "Implement a sophisticated CLI system to record user actions (create, update, delete) performed while offline. These actions are stored in a local, persistent queue. When online, the CLI syncs these actions with a Supabase backend (mocked)."
+    },
+    {
+      "id": "cli-secure-token-storage",
+      "title": "CLI Secure Token Storage with Platform Keychain and GPG Fallback",
+      "difficulty": "ultra-hard",
+      "estimated_time": 200,
+      "tags": [
+        "cli",
+        "security",
+        "token-storage",
+        "keychain",
+        "gpg",
+        "cross-platform"
+      ],
+      "description": "Implement a CLI tool for securely storing and retrieving sensitive tokens (e.g., API keys, Supabase access tokens) using platform-specific keychain/credential managers. The tool must abstract interactions with: - macOS Keychain via `security` command. - Linux systems with `libsecret` via `secret-tool`. - Windows Credential Manager via PowerShell cmdlets (simulated or called if in WSL/Windows). If a native keychain is unavailable or fails, the CLI must fall back to using GPG encryption for storing tokens in a local file. This GPG fallback requires: - User to specify a GPG recipient key ID. - Encryption of tokens before writing to a file. - Decryption of tokens when retrieving (requiring the user's GPG key and passphrase). The CLI should support: - Storing a token for a given service name and account/user identifier. - Retrieving a token for a given service name and account. - Deleting a token. - Listing stored service/account pairs (metadata only, not tokens themselves). - Graceful error handling for keychain access failures, GPG errors, or missing tools. - Non-interactive mode for GPG decryption if GPG agent is configured or passphrase is provided via a secure mechanism (e.g. env var - for testing/CI only)."
+    },
+    {
+      "id": "cli-session-timeout-manager",
+      "title": "CLI-Driven Robust Session Timeout and Refresh Logic with Proactive & Reactive Handling",
+      "difficulty": "ultra-hard",
+      "estimated_time": 250,
+      "tags": [
+        "cli",
+        "session-management",
+        "authentication",
+        "token-refresh",
+        "timeout",
+        "api-client"
+      ],
+      "description": "Implement a CLI tool that interacts with a mock API requiring authenticated sessions. The CLI must manage session tokens (access and refresh tokens), proactively refresh them before expiry, and handle session expiry reactively by attempting refresh or prompting for re-authentication."
+    },
+    {
+      "id": "cli-user-location-audit",
+      "title": "Secure CLI User Geolocation Logging with Temporal Filtering, Anonymization, and Geo-fencing",
+      "difficulty": "ultra-hard",
+      "estimated_time": 230,
+      "tags": [
+        "cli",
+        "geolocation",
+        "audit",
+        "logging",
+        "security",
+        "anonymization",
+        "geofencing",
+        "temporal-filtering"
+      ],
+      "description": "Implement a CLI tool for securely logging user geolocation data. The tool must support appending new location entries, querying logs with advanced filters, anonymizing data for export, and basic geo-fencing alerts."
+    }
+  ]
+}

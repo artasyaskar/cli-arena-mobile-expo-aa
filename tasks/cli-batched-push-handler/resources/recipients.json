@@ -1,0 +1,49 @@
+[
+  {
+    "expoPushToken": "ExponentPushToken[json_xxxxxxxxxxxxxxxxxxxxxx]",
+    "name": "Json Alice",
+    "userId": "json_user_1",
+    "customData": {"city": "New York", "preference": "dark_mode"}
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_yyyyyyyyyyyyyyyyyyyyyy]",
+    "name": "Json Bob",
+    "userId": "json_user_2",
+    "customData": {"newsletter_subscribed": true}
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_zzzzzzzzzzzzzzzzzzzzzz]",
+    "name": "Json Charlie",
+    "userId": "json_user_3",
+    "customData": null
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_aaaaaaaaaaaaaaaaaaaaaa]",
+    "name": "Json Diana",
+    "userId": "json_user_4",
+    "customData": {"last_purchase_days_ago": 10}
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_bbbbbbbbbbbbbbbbbbbbbb]",
+    "userId": "json_user_5",
+    "customData": {"message": "Name is missing for this JSON user"}
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_DeviceNotRegistered]",
+    "name": "Json DNR Test",
+    "userId": "json_user_dnr",
+    "customData": {"test_type": "DeviceNotRegistered"}
+  },
+  {
+    "expoPushToken": "ExponentPushToken[json_MessageRateExceeded]",
+    "name": "Json MRE Test",
+    "userId": "json_user_mre",
+    "customData": {"test_type": "MessageRateExceeded"}
+  },
+  {
+    "expoPushToken": "INVALID_JSON_TOKEN_FORMAT",
+    "name": "Json Invalid Token",
+    "userId": "json_user_invalid_token",
+    "customData": {}
+  }
+]

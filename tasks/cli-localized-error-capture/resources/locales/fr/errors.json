@@ -1,0 +1,10 @@
+{
+  "E_GENERIC": "Une erreur non spécifiée s'est produite (Code: {{errorCode}}).",
+  "E_FILE_NOT_FOUND": "Fichier '{{filename}}' introuvable. Opération: {{operation}}.",
+  "E_PERMISSION_DENIED": "Autorisation refusée pour '{{resource}}'. Utilisateur: {{username}}.",
+  "E_NETWORK_UNAVAILABLE": "Le réseau n'est pas disponible. Veuillez vérifier votre connexion.",
+  "E_INVALID_INPUT": "Entrée invalide fournie pour '{{field}}'. Raison: {{reason}}.",
+  "E_CONFIG_LOAD_FAILED": "Échec du chargement de la configuration depuis '{{path}}'. Erreur: {{detail}}.",
+  "W_DEPRECATED_FEATURE": "Avertissement: La fonctionnalité '{{featureName}}' est obsolète et sera supprimée dans une future version.",
+  "I_OPERATION_SUCCESSFUL": "L'opération '{{operation}}' s'est terminée avec succès pour '{{target}}'."
+}

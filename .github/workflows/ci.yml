@@ -1,0 +1,115 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ] # Or your primary development branch
+  pull_request:
+    branches: [ main ] # Or your primary development branch
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Should match Dockerfile and local dev environment
+
+    # Cache Node.js modules
+    - name: Cache Node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    # TODO: Add setup for Java/Kotlin if Android tests are run directly on CI
+    # - name: Set up JDK 11
+    #   uses: actions/setup-java@v3
+    #   with:
+    #     java-version: '11'
+    #     distribution: 'temurin' # Or 'adopt'
+
+    # TODO: Add setup for Swift if iOS tests are run directly on CI (requires macOS runner)
+    # If using a macOS runner:
+    # - name: Select Xcode version
+    #   run: sudo xcode-select -s /Applications/Xcode_14.2.app/Contents/Developer # Adjust version
+
+    - name: Install project dependencies (Placeholder)
+      run: echo "CI - Placeholder for npm install or make setup"
+      # This will be replaced by `make setup` once the Makefile is robust.
+      # For now, let's assume 'make setup' might involve Docker-specific commands
+      # that are better run after Docker is set up, or it might be too early for it.
+
+    - name: Start Supabase services (if needed for linting/early tests)
+      run: |
+        echo "CI - Placeholder for starting Supabase via Docker Compose"
+        # This would be something like:
+        # docker-compose up -d db auth rest realtime storage-api kong
+        # Need to ensure Supabase is ready before proceeding.
+        # Supabase CLI 'supabase start' might be an option if CLI is installed in CI env.
+
+    - name: Lint code (Placeholder)
+      run: echo "CI - Placeholder for make lint"
+      # This will be `make lint`
+
+    - name: Run tests (Placeholder)
+      run: echo "CI - Placeholder for make test"
+      # This will be `make test`
+
+    # - name: Stop Supabase services
+    #   if: always() # Ensure services are stopped even if previous steps fail
+    #   run: |
+    #     echo "CI - Placeholder for stopping Supabase"
+    #     # docker-compose down
+    #
+    # Note: For a full `make setup -> make lint -> make test` sequence that
+    # relies on Docker Compose, the CI job might need to:
+    # 1. Build the 'app' Docker image.
+    # 2. Run `docker-compose up -d` for all services.
+    # 3. Execute `make` targets, potentially using `docker-compose exec app make ...`.
+    # This initial setup is simplified and will be expanded.
+    # For now, we'll focus on getting the Makefile targets working locally.
+    # The CI will be updated to accurately reflect the `make` commands.
+    # The current placeholders assume that linting/testing might not *yet* depend on a running Supabase instance.
+    #
+    # A more complete approach for later:
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v2
+    #
+    # - name: Build Docker images
+    #   run: make build # Assuming 'make build' also builds the Docker image for 'app' or handles it
+    #
+    # - name: Run services
+    #   run: docker-compose up -d
+    #
+    # - name: Wait for Supabase to be healthy
+    #   run: |
+    #     echo "Waiting for Supabase services to be healthy..."
+    #     # Add a script here to check health of Supabase services, e.g., polling db.
+    #     # Supabase CLI's `supabase status` might be useful if run within the context
+    #     # of the Supabase project, or custom checks against exposed ports.
+    #     sleep 30 # Temporary crude wait
+    #
+    # - name: Run Setup
+    #   run: docker-compose exec -T app make setup # -T disables pseudo-tty allocation
+    #
+    # - name: Run Lint
+    #   run: docker-compose exec -T app make lint
+    #
+    # - name: Run Test
+    #   run: docker-compose exec -T app make test
+    #
+    # - name: Stop services
+    #   if: always()
+    #   run: docker-compose down
+    #
+
+    # Final check to ensure the workflow completes.
+    - name: Workflow complete
+      run: echo "CI workflow steps defined with placeholders."

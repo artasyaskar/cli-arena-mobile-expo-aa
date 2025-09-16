@@ -1,0 +1,10 @@
+{
+  "users": [
+    {"id": "user_1", "name": "Alice Wonderland", "email": "alice@example.com", "version": 1, "last_modified": "2023-01-01T10:00:00Z"},
+    {"id": "user_2", "name": "Bob The Builder", "email": "bob@example.com", "version": 1, "last_modified": "2023-01-01T11:00:00Z"}
+  ],
+  "posts": [
+    {"id": "post_1", "userId": "user_1", "title": "Hello World", "content": "My first post.", "version": 1, "last_modified": "2023-01-02T12:00:00Z"},
+    {"id": "post_2", "userId": "user_2", "title": "Offline Strategies", "content": "Thinking about them.", "version": 2, "last_modified": "2023-01-03T15:30:00Z"}
+  ]
+}

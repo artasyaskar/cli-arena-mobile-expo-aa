@@ -1,0 +1,360 @@
+#!/bin/bash
+
+# solution.sh for cli-session-timeout-manager
+
+# --- Configuration ---
+SESSION_DIR="${CLI_SESSION_DIR:-$HOME/.config/my_cli_app}"
+SESSION_FILE="${SESSION_DIR}/session.json"
+MOCK_AUTH_API="${MOCK_AUTH_API_SCRIPT:-./resources/mock_auth_api.sh}"
+MOCK_PROTECTED_API="${MOCK_PROTECTED_API_SCRIPT:-./resources/mock_protected_resource_api.sh}"
+
+# Proactive refresh window: if access token expires in less than this many seconds, refresh it.
+PROACTIVE_REFRESH_WINDOW_SECONDS="${PROACTIVE_REFRESH_SECONDS:-30}" # Default 30s
+
+# --- Logging ---
+log_message() {
+    local message="$1"
+    local level="${2:-INFO}"
+    echo "$(date +'%Y-%m-%dT%H:%M:%S%z') [$level] [SESSION_MGR] $message" >&2
+}
+
+# --- Session State Management ---
+ensure_session_dir() {
+    if [ ! -d "$SESSION_DIR" ]; then
+        mkdir -p "$SESSION_DIR"
+        chmod 700 "$SESSION_DIR"
+        log_message "Session directory created: $SESSION_DIR"
+    fi
+}
+
+# Load session from file: {access_token, access_token_expires_at, refresh_token, refresh_token_expires_at}
+load_session() {
+    ensure_session_dir
+    if [ -f "$SESSION_FILE" ]; then
+        # Validate JSON structure before trying to parse specific fields
+        if ! jq -e . "$SESSION_FILE" >/dev/null 2>&1; then
+            log_message "Session file $SESSION_FILE is not valid JSON. Discarding." "ERROR"
+            rm -f "$SESSION_FILE" # Remove corrupt file
+            return 1
+        fi
+
+        ACCESS_TOKEN=$(jq -r '.access_token // ""' "$SESSION_FILE")
+        AT_EXPIRES_AT=$(jq -r '.access_token_expires_at // 0' "$SESSION_FILE")
+        REFRESH_TOKEN=$(jq -r '.refresh_token // ""' "$SESSION_FILE")
+        RT_EXPIRES_AT=$(jq -r '.refresh_token_expires_at // 0' "$SESSION_FILE")
+
+        # Basic validation of loaded values
+        if [ -z "$ACCESS_TOKEN" ] || [ -z "$REFRESH_TOKEN" ] || [ "$AT_EXPIRES_AT" -eq 0 ] || [ "$RT_EXPIRES_AT" -eq 0 ]; then
+            log_message "Session file $SESSION_FILE is missing critical fields or has invalid expiry. Discarding." "WARN"
+            clear_session_state # Clears variables and file
+            return 1
+        fi
+        log_message "Session loaded from $SESSION_FILE." "DEBUG"
+        return 0
+    else
+        log_message "No session file found at $SESSION_FILE." "DEBUG"
+        ACCESS_TOKEN="" AT_EXPIRES_AT=0 REFRESH_TOKEN="" RT_EXPIRES_AT=0
+        return 1 # No session
+    fi
+}
+
+# Save session to file
+# $1: access_token, $2: at_expires_at (timestamp), $3: refresh_token, $4: rt_expires_at (timestamp)
+save_session() {
+    ensure_session_dir
+    local at="$1" ate="$2" rt="$3" rte="$4"
+    jq -n --arg at "$at" --argjson ate "$ate" --arg rt "$rt" --argjson rte "$rte" \
+        '{access_token: $at, access_token_expires_at: $ate, refresh_token: $rt, refresh_token_expires_at: $rte}' > "$SESSION_FILE"
+    chmod 600 "$SESSION_FILE"
+    log_message "Session saved to $SESSION_FILE."
+    # Update in-memory variables as well
+    ACCESS_TOKEN="$at"
+    AT_EXPIRES_AT="$ate"
+    REFRESH_TOKEN="$rt"
+    RT_EXPIRES_AT="$rte"
+}
+
+clear_session_state() {
+    log_message "Clearing local session state."
+    rm -f "$SESSION_FILE"
+    ACCESS_TOKEN="" AT_EXPIRES_AT=0 REFRESH_TOKEN="" RT_EXPIRES_AT=0
+}
+
+# --- Token Validation & Refresh Logic ---
+
+# Check if access token is valid (not expired and exists)
+is_access_token_valid() {
+    load_session # Ensure current state is loaded
+    local current_ts=$(date +%s)
+    if [ -n "$ACCESS_TOKEN" ] && [ "$AT_EXPIRES_AT" -gt "$current_ts" ]; then
+        return 0 # Valid
+    fi
+    return 1 # Invalid or expired
+}
+
+# Check if access token is nearing expiry (for proactive refresh)
+is_access_token_nearing_expiry() {
+    load_session
+    local current_ts=$(date +%s)
+    local threshold_ts=$((AT_EXPIRES_AT - PROACTIVE_REFRESH_WINDOW_SECONDS))
+    if [ -n "$ACCESS_TOKEN" ] && [ "$current_ts" -ge "$threshold_ts" ] && [ "$AT_EXPIRES_AT" -gt "$current_ts" ]; then
+        log_message "Access token nearing expiry (expires at $AT_EXPIRES_AT, current $current_ts, threshold $threshold_ts)." "INFO"
+        return 0 # Nearing expiry
+    fi
+    return 1 # Not nearing expiry or already expired/invalid
+}
+
+# Check if refresh token is valid (not expired and exists)
+is_refresh_token_valid() {
+    load_session
+    local current_ts=$(date +%s)
+    if [ -n "$REFRESH_TOKEN" ] && [ "$RT_EXPIRES_AT" -gt "$current_ts" ]; then
+        return 0 # Valid
+    fi
+    return 1 # Invalid or expired
+}
+
+# Attempt to refresh the access token using the refresh token
+attempt_token_refresh() {
+    log_message "Attempting to refresh access token..."
+    if ! is_refresh_token_valid; then
+        log_message "Refresh token is invalid or expired. Cannot refresh." "WARN"
+        return 1
+    fi
+
+    local refresh_payload=$(jq -n --arg rt "$REFRESH_TOKEN" '{refresh_token: $rt}')
+    local response
+    response=$(echo "$refresh_payload" | "$MOCK_AUTH_API" /refresh)
+    local http_status=$?
+
+    if [ "$http_status" -ne 0 ] || ! echo "$response" | jq -e '.status == "success"' >/dev/null 2>&1; then
+        log_message "Token refresh failed. API response (HTTP $http_status): $response" "ERROR"
+        # If refresh fails due to invalid_grant (e.g. refresh token itself expired/revoked), clear session.
+        if echo "$response" | jq -e '.error == "invalid_grant"' >/dev/null 2>&1; then
+            log_message "Refresh token was rejected by server. Clearing session." "ERROR"
+            clear_session_state
+        fi
+        return 1
+    fi
+
+    local new_at=$(echo "$response" | jq -r '.access_token')
+    local new_ate=$(echo "$response" | jq -r '.access_token_expires_at')
+    local new_rt=$(echo "$response" | jq -r '.refresh_token') # Auth API might return a new refresh token
+    local new_rte=$(echo "$response" | jq -r '.refresh_token_expires_at')
+
+    save_session "$new_at" "$new_ate" "$new_rt" "$new_rte"
+    log_message "Access token refreshed successfully. New AT expires at $new_ate."
+    return 0
+}
+
+# Ensures a valid access token is available, attempting refresh or re-login if needed.
+# Returns 0 if a valid token is now available, 1 otherwise.
+ensure_valid_token() {
+    log_message "Ensuring valid token..." "DEBUG"
+    load_session # Make sure current state is in memory
+
+    if is_access_token_valid && ! is_access_token_nearing_expiry; then
+        log_message "Access token is valid and not nearing expiry." "DEBUG"
+        return 0
+    fi
+
+    if is_access_token_nearing_expiry || ! is_access_token_valid; then
+        if ! is_access_token_valid; then
+             log_message "Access token is expired or invalid." "INFO"
+        fi # Nearing expiry message already logged by is_access_token_nearing_expiry
+
+        if attempt_token_refresh; then
+            log_message "Token refresh successful during 'ensure_valid_token'."
+            return 0 # Successfully refreshed
+        else
+            log_message "Token refresh failed during 'ensure_valid_token'. Re-authentication required." "WARN"
+            # Simulate prompting for re-login by clearing session and returning error
+            clear_session_state
+            echo "Session expired and refresh failed. Please log in again." >&2 # User-facing message
+            return 1 # Re-authentication needed
+        fi
+    fi
+    # Should not be reached if logic is correct, but as a fallback:
+    log_message "Fell through ensure_valid_token logic. Assuming re-auth needed." "ERROR"
+    clear_session_state
+    return 1
+}
+
+
+# --- CLI Commands ---
+
+cmd_login() {
+    local username="$1"
+    local password="$2"
+
+    if [ -z "$username" ] || [ -z "$password" ]; then
+        log_message "Usage: login <username> <password>" "ERROR"
+        echo "Login failed: Username and password are required." >&2
+        return 1
+    fi
+
+    log_message "Attempting login for user '$username'..."
+    # For mock API, pass credentials via env vars or make it parse from stdin.
+    # Mock auth API is set to try stdin first, then env vars.
+    local login_payload=$(jq -n --arg u "$username" --arg p "$password" '{username: $u, password: $p}')
+    local response
+    response=$(echo "$login_payload" | "$MOCK_AUTH_API" /login)
+    local http_status=$?
+
+    if [ "$http_status" -ne 0 ] || ! echo "$response" | jq -e '.status == "success"' >/dev/null 2>&1; then
+        log_message "Login failed. API response (HTTP $http_status): $response" "ERROR"
+        echo "Login failed. $(echo "$response" | jq -r '.error_description // "Please check credentials or API status."')" >&2
+        return 1
+    fi
+
+    local at=$(echo "$response" | jq -r '.access_token')
+    local ate=$(echo "$response" | jq -r '.access_token_expires_at')
+    local rt=$(echo "$response" | jq -r '.refresh_token')
+    local rte=$(echo "$response" | jq -r '.refresh_token_expires_at')
+
+    save_session "$at" "$ate" "$rt" "$rte"
+    log_message "Login successful for user '$username'."
+    echo "Login successful."
+}
+
+cmd_call_api() {
+    local resource_path="${1:-/default-resource}" # Example: /data, /status
+    local request_data_json="${2:-{\}}" # Optional JSON data for POST
+
+    if ! ensure_valid_token; then
+        # ensure_valid_token already printed "Please log in again." if needed
+        return 1
+    fi
+
+    log_message "Calling protected API endpoint: $resource_path with current access token."
+    # Pass token via HTTP_AUTHORIZATION for mock_protected_resource_api.sh
+    local response
+    response=$(HTTP_AUTHORIZATION="Bearer $ACCESS_TOKEN" echo "$request_data_json" | "$MOCK_PROTECTED_API" "$resource_path")
+    local http_status=$?
+
+    if [ "$http_status" -eq 401 ]; then # Unauthorized, potentially expired token
+        log_message "API call failed with 401 (Unauthorized). Attempting reactive refresh." "WARN"
+        # Check if the error was specifically "token_expired" (mock_auth_api /validate returns this)
+        if echo "$response" | jq -e '.error_description | test("Access token has expired")' >/dev/null 2>&1; then
+            if attempt_token_refresh; then
+                log_message "Reactive refresh successful. Retrying API call..."
+                response=$(HTTP_AUTHORIZATION="Bearer $ACCESS_TOKEN" echo "$request_data_json" | "$MOCK_PROTECTED_API" "$resource_path")
+                http_status=$?
+                if [ "$http_status" -eq 0 ]; then
+                    log_message "API call successful after reactive refresh."
+                    echo "API Call Successful (after refresh):"
+                    echo "$response" | jq '.'
+                    return 0
+                else
+                    log_message "API call failed even after reactive refresh (HTTP $http_status): $response" "ERROR"
+                    echo "API Call Failed (after refresh). Server response:" >&2
+                    echo "$response" | jq '.' >&2
+                    return 1
+                fi
+            else
+                log_message "Reactive refresh failed. Re-authentication required." "ERROR"
+                clear_session_state
+                echo "Session expired and refresh failed. Please log in again." >&2
+                return 1
+            fi
+        else
+            log_message "API call failed with 401 but not due to token expiry, or error unclear. Detail: $response" "ERROR"
+            echo "API Call Failed (Unauthorized). Server response:" >&2
+            echo "$response" | jq '.' >&2
+            return 1
+        fi
+    elif [ "$http_status" -ne 0 ]; then
+        log_message "API call failed with HTTP $http_status: $response" "ERROR"
+        echo "API Call Failed. Server response:" >&2
+        echo "$response" | jq '.' >&2
+        return 1
+    fi
+
+    log_message "API call successful."
+    echo "API Call Successful:"
+    echo "$response" | jq '.' # Pretty print JSON response
+}
+
+cmd_logout() {
+    load_session # Load current refresh token if any
+    if [ -n "$REFRESH_TOKEN" ]; then
+        log_message "Attempting server-side logout (invalidate refresh token)..."
+        local logout_payload=$(jq -n --arg rt "$REFRESH_TOKEN" '{refresh_token: $rt}')
+        # Call mock auth API's /logout endpoint
+        local response
+        response=$(echo "$logout_payload" | "$MOCK_AUTH_API" /logout)
+        local http_status=$?
+        if [ "$http_status" -eq 0 ] && echo "$response" | jq -e '.status == "success"' >/dev/null 2>&1; then
+            log_message "Server-side logout successful (refresh token invalidated)."
+        else
+            log_message "Server-side logout failed or not supported by mock. Response (HTTP $http_status): $response" "WARN"
+        fi
+    else
+        log_message "No active session to logout from server-side."
+    fi
+    clear_session_state
+    echo "Logged out successfully."
+}
+
+cmd_status() {
+    load_session
+    if ! is_access_token_valid; then
+        echo "Status: No valid session. Please log in."
+        if [ -n "$REFRESH_TOKEN" ] && ! is_refresh_token_valid; then
+            echo "Refresh token also expired or invalid."
+        elif [ -n "$REFRESH_TOKEN" ]; then
+            echo "Refresh token might still be valid (Expires at: $(date -r "$RT_EXPIRES_AT" -u)). Try calling an API to trigger refresh or login."
+        fi
+        return 1
+    fi
+    echo "Status: Active session."
+            echo "Access Token Expires At: $(date -r "$AT_EXPIRES_AT" -u) (in $((AT_EXPIRES_AT - $(date +%s))) seconds)"
+        echo "Refresh Token Expires At: $(date -r "$RT_EXPIRES_AT" -u) (in $((RT_EXPIRES_AT - $(date +%s))) seconds)"
+    if is_access_token_nearing_expiry; then
+        echo "Note: Access token is nearing expiry (within $PROACTIVE_REFRESH_WINDOW_SECONDS seconds)."
+    fi
+}
+
+# --- Main Dispatcher ---
+COMMAND="$1"
+# Ensure session dir exists for all commands that might interact with session file
+ensure_session_dir
+
+shift
+case "$COMMAND" in
+    login)
+        cmd_login "$1" "$2" # username password
+        ;;
+    call-api)
+        cmd_call_api "$1" "$2" # resource_path [json_data]
+        ;;
+    logout)
+        cmd_logout
+        ;;
+    status)
+        cmd_status
+        ;;
+    force-refresh) # For testing: explicitly try to refresh
+        load_session
+        if attempt_token_refresh; then echo "Token refresh successful."; else echo "Token refresh failed."; fi
+        ;;
+    set-mock-lifespans) # For testing: control token lifespans in mock_auth_api
+        export MOCK_ACCESS_TOKEN_LIFESPAN="$2" # e.g., 5 (seconds)
+        export MOCK_REFRESH_TOKEN_LIFESPAN="$3" # e.g., 10 (seconds)
+        echo "Mock token lifespans set for next auth API calls: AT=$2s, RT=$3s (for this shell session)"
+        ;;
+    *)
+        echo "Usage: $0 <COMMAND> [OPTIONS]" >&2
+        echo "Commands:" >&2
+        echo "  login <username> <password>        - Authenticate and start a session." >&2
+        echo "  call-api [resource_path [json_data]] - Call a protected API endpoint." >&2
+        echo "  logout                             - Clear local session and attempt server logout." >&2
+        echo "  status                             - Show current session status and token expiry." >&2
+        echo "  force-refresh                      - Manually trigger a token refresh attempt." >&2
+        echo "Development/Test Commands:" >&2
+        echo "  set-mock-lifespans <at_secs> <rt_secs> - Configure mock token lifespans (for testing)." >&2
+        exit 1
+        ;;
+esac
+
+exit $?

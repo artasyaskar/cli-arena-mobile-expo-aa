@@ -1,0 +1,10 @@
+{
+  "E_GENERIC": "Ocurrió un error no especificado (Código: {{errorCode}}).",
+  "E_FILE_NOT_FOUND": "Archivo '{{filename}}' no encontrado. Operación: {{operation}}.",
+  "E_PERMISSION_DENIED": "Permiso denegado para '{{resource}}'. Usuario: {{username}}.",
+  "E_NETWORK_UNAVAILABLE": "La red no está disponible. Por favor, compruebe su conexión.",
+  "E_INVALID_INPUT": "Entrada inválida proporcionada para '{{field}}'. Razón: {{reason}}.",
+  "E_CONFIG_LOAD_FAILED": "Falló la carga de la configuración desde '{{path}}'. Error: {{detail}}.",
+  "W_DEPRECATED_FEATURE": "Advertencia: La funcionalidad '{{featureName}}' está obsoleta y será eliminada en una versión futura.",
+  "I_OPERATION_SUCCESSFUL": "Operación '{{operation}}' completada con éxito para '{{target}}'."
+}

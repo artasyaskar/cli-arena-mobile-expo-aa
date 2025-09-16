@@ -1,0 +1,21 @@
+subscription userChanges {
+  usersCollection(order_by: { updated_at: desc }) {
+    id
+    name
+    email
+    updated_at
+    # Example of a related table if schema supported it
+    # postsCollection {
+    #   title
+    # }
+  }
+}
+
+# Another example with variables:
+# subscription userById($userId: UUID!) {
+#   usersCollection(where: { id: { _eq: $userId }}) {
+#     id
+#     name
+#     email
+#   }
+# }

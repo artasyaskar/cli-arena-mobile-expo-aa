@@ -1,0 +1,16 @@
+title: "Hello {{name|Friend}}!"
+body: "This is a special notification for you, {{name}}. Your user ID is {{userId}}. We have a special offer based on your data: {{customData.offer_detail|generic offer}}."
+data: "{ \"internalId\": \"{{userId}}\", \"source\": \"cli_batch_push\", \"custom\": {{customData|jsonencode}} }"
+# Example of more complex data structure:
+# data: |
+#   {
+#     "screenToOpen": "UserProfile",
+#     "userId": "{{userId}}",
+#     "messageId": "msg_{{RANDOM_ID}}",
+#     "campaign": "Q4_Promo",
+#     "userDetails": {
+#       "name": "{{name}}",
+#       "isPremium": "{{customData.isPremium|false}}"
+#     },
+#     "rawCustom": {{customData|jsonencode}}
+#   }

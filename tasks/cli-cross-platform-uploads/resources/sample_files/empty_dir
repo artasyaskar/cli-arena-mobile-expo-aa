@@ -1,0 +1,5 @@
+# This is an empty directory, it should be handled (e.g. ignored or created on remote)
+# For file uploader, it's typically ignored unless explicitly asked to create empty dirs.
+# This file itself is just a placeholder to ensure git tracks the empty_dir.
+# Create an actual empty file inside if needed for some tools, or a .gitkeep
+.gitkeep

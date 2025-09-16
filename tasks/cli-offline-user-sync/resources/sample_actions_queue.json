@@ -1,0 +1,53 @@
+[
+  {
+    "actionId": "action_001",
+    "type": "CREATE",
+    "entity": "users",
+    "payload": {"id": "user_3", "name": "Charlie Brown", "email": "charlie@example.com"},
+    "timestamp": "2023-01-05T10:00:00Z",
+    "client_version": 1
+  },
+  {
+    "actionId": "action_002",
+    "type": "UPDATE",
+    "entity": "users",
+    "id": "user_1",
+    "payload": {"email": "alice.wonder@example.com"},
+    "timestamp": "2023-01-05T10:05:00Z",
+    "client_version": 1
+  },
+  {
+    "actionId": "action_003",
+    "type": "CREATE",
+    "entity": "posts",
+    "payload": {"id": "post_3", "userId": "user_3", "title": "My New Post", "content": "Content created offline."},
+    "timestamp": "2023-01-05T11:00:00Z",
+    "client_version": 1
+  },
+  {
+    "actionId": "action_004",
+    "type": "UPDATE",
+    "entity": "posts",
+    "id": "post_1",
+    "payload": {"content": "My first post, updated content."},
+    "timestamp": "2023-01-05T11:30:00Z",
+    "client_version": 1
+  },
+  {
+    "actionId": "action_005",
+    "type": "DELETE",
+    "entity": "users",
+    "id": "user_2",
+    "timestamp": "2023-01-05T12:00:00Z",
+    "client_version": 1
+  },
+  {
+    "actionId": "action_006",
+    "type": "UPDATE",
+    "entity": "posts",
+    "id": "post_2",
+    "payload": {"title": "Offline Strategies (Client Edit)", "content": "Client content is better."},
+    "timestamp": "2023-01-03T14:00:00Z",
+    "client_version": 2
+  }
+]

@@ -1,0 +1,79 @@
+{
+  "formId": "issue_report_v2",
+  "title": "Software Issue Report Form",
+  "fields": [
+    {
+      "name": "reporter_email",
+      "label": "Your Email Address",
+      "type": "email",
+      "required": true,
+      "validation": {
+        "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+        "regex_error": "Please enter a valid email address."
+      }
+    },
+    {
+      "name": "software_version",
+      "label": "Software Version (e.g., 1.2.3)",
+      "type": "text",
+      "required": true,
+      "validation": {
+        "regex": "^\\d+\\.\\d+(\\.\\d+)?([a-zA-Z0-9.-]*)?$",
+        "regex_error": "Please enter a valid version number (e.g., 1.0, 2.3.4b)."
+      }
+    },
+    {
+      "name": "operating_system",
+      "label": "Operating System",
+      "type": "select",
+      "required": true,
+      "options": ["Windows 10", "Windows 11", "macOS Ventura", "macOS Sonoma", "Linux (Ubuntu)", "Linux (Other)", "Other"]
+    },
+    {
+      "name": "issue_summary",
+      "label": "Brief summary of the issue (max 100 chars)",
+      "type": "text",
+      "required": true,
+      "validation": {
+        "minLength": 10,
+        "maxLength": 100
+      }
+    },
+    {
+      "name": "steps_to_reproduce",
+      "label": "Steps to reproduce the issue",
+      "type": "textarea",
+      "required": true
+    },
+    {
+      "name": "expected_behavior",
+      "label": "What did you expect to happen?",
+      "type": "textarea",
+      "required": false
+    },
+    {
+      "name": "actual_behavior",
+      "label": "What actually happened?",
+      "type": "textarea",
+      "required": true
+    },
+    {
+      "name": "severity",
+      "label": "Severity of the issue",
+      "type": "select",
+      "required": true,
+      "options": ["Critical", "High", "Medium", "Low", "Trivial"],
+      "defaultValue": "Medium"
+    },
+    {
+        "name": "attachment_id",
+        "label": "Optional Attachment ID (e.g., screenshot ID from another system)",
+        "type": "text",
+        "required": false,
+        "validation": {
+            "regex": "^[a-zA-Z0-9_-]*$",
+            "regex_error": "Attachment ID can only contain letters, numbers, underscores, and hyphens."
+        }
+    }
+  ]
+}
